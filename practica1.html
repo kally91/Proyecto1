@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Educativa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+        .calculator {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        .calculator h1 {
+            color: #333;
+            font-size: 1.5em;
+        }
+        .output {
+            font-size: 2em;
+            text-align: right;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            margin: 5px;
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button:active {
+            background-color: #388e3c;
+        }
+        .button-operation {
+            background-color: #2196F3;
+        }
+        .button-operation:hover {
+            background-color: #1976d2;
+        }
+        .button-clear {
+            background-color: #f44336;
+        }
+        .button-clear:hover {
+            background-color: #d32f2f;
+        }
+        .button-equal {
+            background-color: #FF9800;
+            width: 128px;
+        }
+        .explanation {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #555;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <h1>Calculadora Educativa</h1>
+        <div class="output" id="output">0</div>
+        <div>
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button button-operation" onclick="setOperation('+')">+</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button button-operation" onclick="setOperation('-')">-</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button button-operation" onclick="setOperation('*')">*</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="clearOutput()">C</button>
+            <button class="button button-equal" onclick="calculateResult()">=</button>
+            <button class="button button-operation" onclick="setOperation('/')">/</button>
+        </div>
+        <div class="explanation" id="explanation">Aquí aparecerán las explicaciones de cada operación.</div>
+    </div>
+
+    <script>
+        let currentInput = '';
+        let currentOperation = null;
+        let previousInput = '';
+        
+        function appendNumber(number) {
+            if (currentInput === '0') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+            updateOutput();
+        }
+
+        function clearOutput() {
+            currentInput = '';
+            previousInput = '';
+            currentOperation = null;
+            updateOutput();
+            updateExplanation('Calculadora reseteada.');
+        }
+
+        function setOperation(operation) {
+            if (currentInput === '') return;
+            if (previousInput !== '') {
+                calculateResult();
+            }
+            currentOperation = operation;
+            previousInput = currentInput;
+            currentInput = '';
+            updateExplanation(`Has seleccionado la operación: ${operation}`);
+        }
+
+        function calculateResult() {
+            try {
+                // Usamos eval() para evaluar la expresión matemática completa respetando el orden de operaciones
+                let result = eval(currentInput);
+                
+                if (isNaN(result)) {
+                    throw new Error("Expresión inválida");
+                }
+                
+                currentInput = result.toString();
+                updateExplanation(`Resultado: ${result}`);
+            } catch (error) {
+                currentInput = 'Error';
+                updateExplanation('Expresión inválida o error en la operación.');
+            }
+            updateOutput();
+        }
+
+        function updateOutput() {
+            document.getElementById('output').textContent = currentInput || '0';
+        }
+
+        function updateExplanation(message) {
+            document.getElementById('explanation').textContent = message;
+        }
+    </script>
+    
+</body>
+</html>
